@@ -13,7 +13,7 @@ exports.defaults = function() {
 };
 
 exports.placeholder = function() {
-  var ph = "  # csslint:                    # settings for javascript hinting\n" +
+  var ph = "\n  # csslint:                    # settings for javascript hinting\n" +
      "    # exclude:[]               # array of strings or regexes that match files to not csslint,\n" +
      "                               # strings are paths that can be relative to the watch.sourceDir\n" +
      "                               # or absolute\n" +
@@ -22,7 +22,7 @@ exports.placeholder = function() {
      "    # vendor: false            # fire csslint for copied vendor javascript files (like jquery)\n" +
      "    # rules:                   # Settings: http://www.csslint.com/options/, these settings will\n" +
      "                               # override any settings set up in the csslintrc\n" +
-     "      # floats: false          # This is an example override, this is not a default\n\n";
+     "      # floats: false          # This is an example override, this is not a default\n";
   return ph;
 };
 
