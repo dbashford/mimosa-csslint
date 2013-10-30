@@ -5,4 +5,4 @@ This is Mimosa's CSS linting module. It is soon to be a Mimosa default module bu
 
 * For more information regarding Mimosa, see http://mimosa.io
 * For information regarding linting in Mimosa, see http://mimosa.io/utilities.html#lint
-* For more info about jshint, check out http://www.jshint.com/
+* For more info about csslint, check out http://www.csslint.net/
