@@ -1,21 +1,20 @@
 "use strict";
 
 var csslint = require("csslint").CSSLint,
-    logger = require("logmimosa"),
     config = require('./config'),
+    logger = null,
     lintOptions = {};
 
 var _log = function (fileName, message) {
-  var msg =  "CSSLint Warning: " + message.message + " In " + fileName + ",";
+  var msg =  "CSSLint Warning: " + message.message + " In [[ " + fileName + " ]],";
   if (message.line) {
-    msg += " on line " + message.line + ", column " + message.col + ",";
+    msg += " on line [[ " + message.line + " ]], column " + message.col + ",";
   }
   msg += " from CSSLint rule ID '" + message.rule.id + "'.";
   logger.warn(msg);
 };
 
 var _lint = function (config, options, next) {
-
 
   var hasFiles = options.files && options.files.length > 0;
   if (!hasFiles) {
@@ -60,6 +59,7 @@ var _lint = function (config, options, next) {
 };
 
 var registration = function (config, register) {
+  logger = config.log;
   var extensions = null;
 
   if (config.csslint.vendor) {
