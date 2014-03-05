@@ -1,7 +1,7 @@
 "use strict";
 
 var csslint = require("csslint").CSSLint,
-    config = require('./config'),
+    config = require("./config"),
     logger = null,
     lintOptions = {};
 
@@ -52,7 +52,7 @@ var _lint = function (config, options, next) {
       }
     }
 
-    if (i === options.files.length-1) {
+    if (i === options.files.length - 1) {
       next();
     }
   });
@@ -70,10 +70,10 @@ var registration = function (config, register) {
     extensions = config.extensions.css;
   } else if (config.csslint.copied) {
     logger.debug("Linting copied CSS only");
-    extensions = ['css'];
+    extensions = ["css"];
   } else if (config.csslint.compiled) {
     logger.debug("Linting compiled CSS only");
-    extensions = config.extensions.css.filter(function (ext) { return ext !== 'css'; } );
+    extensions = config.extensions.css.filter(function (ext) { return ext !== "css"; } );
   } else {
     logger.debug("CSS linting is entirely turned off");
     extensions = [];
@@ -89,7 +89,7 @@ var registration = function (config, register) {
     }
   });
 
-  register(['add','update','buildExtension','buildFile'], 'afterCompile', _lint, extensions);
+  register(["add","update","buildExtension","buildFile"], "afterCompile", _lint, extensions);
 };
 
 module.exports = {
