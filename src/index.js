@@ -15,10 +15,18 @@ var _log = function (fileName, message) {
 };
 
 var _lint = function (config, options, next) {
-
   var hasFiles = options.files && options.files.length > 0;
   if (!hasFiles) {
     return next();
+  }
+
+  if ( !csslint ) {
+    csslint = require("csslint").CSSLint;
+    csslint.getRules().forEach( function(rule) {
+      if (config.csslint.rules[rule.id] !== false) {
+        lintOptions[rule.id] = 1;
+      }
+    });
   }
 
   options.files.forEach( function(file, i) {
@@ -44,11 +52,6 @@ var _lint = function (config, options, next) {
         } else if (options.isJavascript && !options.isCopy && !config.csslint.compiled) {
           logger.debug("Not linting compiled css [[ " + fileName + "]]");
         } else {
-
-          if ( !csslint ) {
-            csslint = require("csslint").CSSLint;
-          }
-
           var result = csslint.verify(outputText, lintOptions);
           result.messages.forEach( function(message) {
             _log(fileName, message);
@@ -87,12 +90,6 @@ var registration = function (config, register) {
   if (extensions.length === 0) {
     return;
   }
-
-  csslint.getRules().forEach( function(rule) {
-    if (config.csslint.rules[rule.id] !== false) {
-      lintOptions[rule.id] = 1;
-    }
-  });
 
   register(["add","update","buildExtension","buildFile"], "afterCompile", _lint, extensions);
 };
