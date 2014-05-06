@@ -1,6 +1,6 @@
 "use strict";
 
-var csslint = require("csslint").CSSLint,
+var csslint = null,
     config = require("./config"),
     logger = null,
     lintOptions = {};
@@ -44,6 +44,11 @@ var _lint = function (config, options, next) {
         } else if (options.isJavascript && !options.isCopy && !config.csslint.compiled) {
           logger.debug("Not linting compiled css [[ " + fileName + "]]");
         } else {
+
+          if ( !csslint ) {
+            csslint = require("csslint").CSSLint;
+          }
+
           var result = csslint.verify(outputText, lintOptions);
           result.messages.forEach( function(message) {
             _log(fileName, message);
