@@ -13,13 +13,13 @@ exports.defaults = function() {
 };
 
 exports.placeholder = function() {
-  var ph = "\n  csslint:                    # settings for javascript hinting\n" +
+  var ph = "\n  csslint:                    # settings for CSS linting\n" +
      "    exclude:[]               # array of strings or regexes that match files to not csslint,\n" +
      "                             # strings are paths that can be relative to the watch.sourceDir\n" +
      "                             # or absolute\n" +
-     "    compiled: true           # fire csslint on successful compile of meta-language to javascript\n" +
-     "    copied: true             # fire csslint for copied javascript files\n" +
-     "    vendor: false            # fire csslint for copied vendor javascript files (like jquery)\n" +
+     "    compiled: true           # fire csslint on successful compile of meta-language to CSS\n" +
+     "    copied: true             # fire csslint for copied CSS files\n" +
+     "    vendor: false            # fire csslint for copied vendor CSS files (like bootstrap)\n" +
      "    rules:                   # Settings: http://www.csslint.com/options/, these settings will\n" +
      "                             # override any settings set up in the csslintrc\n" +
      "      floats: false          # This is an example override, this is not a default\n";
