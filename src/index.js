@@ -91,7 +91,7 @@ var registration = function (config, register) {
     return;
   }
 
-  register(["add","update","buildExtension","buildFile"], "afterCompile", _lint, extensions);
+  register(["add","update","buildExtension","buildFile"], "beforeWrite", _lint, extensions);
 };
 
 module.exports = {
