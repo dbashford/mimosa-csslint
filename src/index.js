@@ -6,7 +6,7 @@ var csslint = null,
     lintOptions = {};
 
 var _log = function (fileName, message) {
-  var msg =  "CSSLint Warning: " + message.message + " In [[ " + fileName + " ]],";
+  var msg = "CSSLint Warning: " + message.message + " In [[ " + fileName + " ]],";
   if (message.line) {
     msg += " on line [[ " + message.line + " ]], column " + message.col + ",";
   }
@@ -33,30 +33,40 @@ var _lint = function (config, options, next) {
     var outputText = file.outputFileText,
         fileName = file.inputFileName;
 
-    if (outputText && outputText.length > 0) {
-      var doit = true;
+    if (outputText && outputText.length) {
+      var isVendor = file.isVendor || (file.isVendor === undefined && options.isVendor);
 
+      // excluded via string path?
       if (config.csslint.exclude && config.csslint.exclude.indexOf(fileName) !== -1) {
-        doit = false;
+        logger.debug("Not linting css [[" + fileName + " ]], excluded via path");
       }
 
-      if (config.csslint.excludeRegex && fileName.match(config.csslint.excludeRegex)) {
-        doit = false;
+      // excluded via regex?
+      else if (config.csslint.excludeRegex && fileName.match(config.csslint.excludeRegex)) {
+        logger.debug("Not linting copied css [[" + fileName + " ]], excluded via regex");
       }
 
-      if (doit) {
-        if (options.isCopy && !options.isVendor && !config.csslint.copied) {
-          logger.debug("Not linting copied css [[" + fileName + " ]]");
-        } else if (options.isVendor && !config.csslint.vendor) {
-          logger.debug("Not linting vendor css [[ " + fileName + " ]]");
-        } else if (options.isJavascript && !options.isCopy && !config.csslint.compiled) {
-          logger.debug("Not linting compiled css [[ " + fileName + "]]");
-        } else {
-          var result = csslint.verify(outputText, lintOptions);
-          result.messages.forEach( function(message) {
-            _log(fileName, message);
-          });
-        }
+      // excluded because not linting copied assets?
+      else if (options.isCopy && !isVendor && !config.csslint.copied) {
+        logger.debug("Not linting copied css [[" + fileName + " ]]");
+      }
+
+      // excluded because not linting vendor assets?
+      else if (isVendor && !config.csslint.vendor) {
+        logger.debug("Not linting vendor css [[ " + fileName + " ]]");
+      }
+
+      // excluded because not linting compiled CSS
+      else if (options.isJavascript && !options.isCopy && !config.csslint.compiled) {
+        logger.debug("Not linting compiled css [[ " + fileName + "]]");
+      }
+
+      // linting!
+      else {
+        var result = csslint.verify(outputText, lintOptions);
+        result.messages.forEach( function(message) {
+          _log(fileName, message);
+        });
       }
     }
 
@@ -70,28 +80,42 @@ var registration = function (config, register) {
   logger = config.log;
   var extensions = null;
 
+  // vendor being linted, so everything needs to pass through linting
   if (config.csslint.vendor) {
-    logger.debug("vendor being linted, so everything needs to pass through linting");
     extensions = config.extensions.css;
-  } else if (config.csslint.copied && config.csslint.compiled) {
-    logger.debug("Linting compiled/copied CSS only");
+  }
+
+  // Linting compiled/copied CSS only
+  else if (config.csslint.copied && config.csslint.compiled) {
     extensions = config.extensions.css;
-  } else if (config.csslint.copied) {
-    logger.debug("Linting copied CSS only");
+  }
+
+  // Linting copied CSS only
+  else if (config.csslint.copied) {
     extensions = ["css"];
-  } else if (config.csslint.compiled) {
-    logger.debug("Linting compiled CSS only");
-    extensions = config.extensions.css.filter(function (ext) { return ext !== "css"; } );
-  } else {
-    logger.debug("CSS linting is entirely turned off");
+  }
+
+  // Linting compiled CSS only
+  else if (config.csslint.compiled) {
+    extensions = config.extensions.css.filter(function (ext) {
+      return ext !== "css";
+    });
+  }
+
+  // CSS linting is entirely turned off
+  else {
     extensions = [];
   }
 
-  if (extensions.length === 0) {
+  if ( !extensions.length ) {
     return;
   }
 
-  register(["add","update","buildExtension","buildFile"], "beforeWrite", _lint, extensions);
+  register(
+    ["add", "update", "buildExtension", "buildFile"],
+    "beforeWrite",
+    _lint,
+    extensions);
 };
 
 module.exports = {
