@@ -36,8 +36,8 @@ When this property is set to `true`, compiled CSS (i.e. sass, less, stylus) will
 When this property is set to `true`, copied CSS will be csslinted.
 
 #### `csslint.vendor` boolean
-When this property is set to `true`, vendor CSS will be csslinted.
+When this property is set to `true`, vendor CSS will be csslinted. What files are vendor is determined by Mimosa core. Mimosa has a [`vendor`](http://mimosa.io/configuration.html#vendor) setting which indicates where vendor files are located.
 
 #### `csslint.rules` object
-Add [csslint overrides](https://github.com/CSSLint/csslint/wiki/Rules) as key/value pairs underneath this property.
+If you disagree with any of the jshint settings, or want to turn some of the rules off, add [csslint overrides](https://github.com/CSSLint/csslint/wiki/Rules) as key/value pairs underneath this property.
 
